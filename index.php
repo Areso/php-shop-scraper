@@ -26,10 +26,18 @@ $itemNameLen       = $itemNameEnd - $itemNamePos;
 $itemName          = substr($html_text, $itemNamePos+21, $itemNameLen-8);
 echo "itemName is ".$itemName."<br>";
 
-
-foreach ($html->find('.image.selected', 0) as $image) {
-        echo 'partial success';
+//description
+foreach ($html->find('#product-description') as $descr) {
+        //echo ' partial success ';
+        echo $descr."<br>";
 }
+//big-descr
+foreach ($html->find('#product-features') as $features) {
+        //echo ' partial success ';
+        echo strip_tags($features)."<br>";
+}
+//find(' img [width]'); 
+
 
 $html->clear();
 unset($html);
