@@ -6,7 +6,7 @@ ini_set("default_charset",'utf-8');//utf-8
 ini_set('display_errors', 1);
 
 $myfile = fopen('newtestpage.html','r');
-$mystring = fread($myfile,filesize('testpage.html'));
+$mystring = fread($myfile,filesize('newtestpage.html'));
 fclose($myfile);
 
 //$mystring = readfile("testpage.html");
