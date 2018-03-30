@@ -1,6 +1,7 @@
 <?php
 require('vendor/advanced_html_dom.php');
-//require('source.php');
+//require('vendor/simple_html_dom.php');
+
 
 ini_set("default_charset",'utf-8');//utf-8
 ini_set('display_errors', 1);
@@ -12,9 +13,22 @@ fclose($myfile);
 //$mystring = readfile("testpage.html");
 
 $time_milliB = (int) round(microtime(true) * 1000);
-
-//$html_text2      = file_get_contents('http://taranko-shop.ru/1700/');
-$html_text = $mystring;
+$id  = 1000;
+$ids = $id;
+$success = 0;
+if ($success == 1) {
+	$id = 123;
+}
+$html_text2      = file_get_contents('http://taranko-shop.ru/'.$id);// OR die('not found');
+//echo gettype($html_text2);
+if (gettype($html_text2) === 'boolean') {
+	echo '404';
+}
+$html_text       = $html_text2;
+echo $html_text;
+$success = 1;
+//OR
+//$html_text = $mystring;
 
 //$myfilew = fopen("newtestpage.html", "w");
 //fwrite($myfilew, $html_text2);
@@ -97,10 +111,44 @@ foreach ($html->find('#product-description') as $descr) {
 
 //big-descr
 foreach ($html->find('#product-features') as $features) {
-        //echo ' partial success ';
         echo strip_tags($features)."<br>";
 }
-//find(' img [width]'); 
+
+//modifications
+$mods = [];
+foreach ($html->find('meta[itemprop=name]') as $metas) {
+        $mods[] = $metas->getAttribute("content");
+        echo strip_tags($metas->getAttribute("content"))." <br>";
+}
+$modsCount = count($mods);
+
+$prices = [];
+$n = 0;
+foreach ($html->find('meta[itemprop=price]') as $metas) {
+	    if ($n < $modsCount) {
+			$prices[] = $metas->getAttribute("content");
+			echo strip_tags($metas->getAttribute("content"))." <br>";
+			$n = $n + 1;
+		}
+}
+
+$n = 0;
+$stockNumbers = [];
+foreach ($html->find('.stock-none, .stock-critical, .stock-low, .stock-high') as $stock) {
+	    if ($n < $modsCount) {
+			$stockNumber = $stock->plaintext; //text based description
+			/*
+			$stockNumber = filter_var($stock->plaintext, FILTER_SANITIZE_NUMBER_INT);
+			if ($stockNumber == '') {
+					$stockNumber = 0;
+			}
+			//Нет в наличии, 1 штука, 2 штуки, Несколько штук, В наличии
+			*/ 
+			$stockNumbers[] = $stock->plaintext;
+			echo $stock->plaintext." <br>";
+			$n = $n + 1;
+		}
+}
 
 $html->clear();
 unset($html);
